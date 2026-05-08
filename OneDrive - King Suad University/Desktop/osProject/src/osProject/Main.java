@@ -26,7 +26,7 @@ public class Main {
                 break;
 
             case 3:
-
+    runPriority(jobQueue);
                 break;
             default:
                 System.out.println("Invalid choice");
@@ -165,5 +165,50 @@ public class Main {
         System.out.println("Average Turnaround Time: " + avgTurnaround);
 
     }
+    private static void runPriority(Queue<Process> jobQueue) {
+
+    memoryManager memory = new memoryManager();
+    readyQueue readyQueue = new readyQueue();
+
+    admitterThread admitter = new admitterThread(jobQueue, readyQueue, memory);
+    admitter.start();
+
+    try {
+        admitter.join();
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+
+    PriorityScheduler ps = new PriorityScheduler();
+    List<Process> results = ps.runPriority(readyQueue, memory);
+
+    System.out.println("\nProcess Table:");
+    System.out.println("ID\tBurst\tStart\tEnd\tWaiting\tTurnaround");
+
+    double totalWaiting = 0;
+    double totalTurnaround = 0;
+
+    for (Process p : results) {
+        System.out.println(p.processId + "\t" +
+                p.burstTime + "\t" +
+                p.startTime + "\t" +
+                p.terminationTime + "\t" +
+                p.waitingTime + "\t" +
+                p.turnaroundTime);
+
+        totalWaiting += p.waitingTime;
+        totalTurnaround += p.turnaroundTime;
+    }
+
+    double avgWaiting = totalWaiting / results.size();
+    double avgTurnaround = totalTurnaround / results.size();
+
+    System.out.println("\nAverage Waiting Time: " + avgWaiting);
+    System.out.println("Average Turnaround Time: " + avgTurnaround);
+
+    System.out.println("\nStarvation Report:");
+    ps.printStarved();
+}
+
 
 }

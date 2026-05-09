@@ -17,25 +17,23 @@ public class admitterThread extends Thread {
         System.out.println("Admitter Thread started");
 
         while (true) {
-            synchronized (jobQueue) { // to ensure no one else can edit job queue at the same time
+            synchronized (jobQueue) {
                 if (!jobQueue.isEmpty()) {
                     Process process = jobQueue.peek();
 
                     if (memory.allocate(process.memoryRequired)) {
-                        jobQueue.poll(); // delete procces from jobQueue
-                        ReadyQueue.insert(process); // add the deleted procces to ReadtQueue
+                        jobQueue.poll();
+                        process.state = "READY";
+                        ReadyQueue.insert(process);
                         System.out.println("[Admitter] Admitted P" + process.processId);
                     }
+                } else {
+                    break;
                 }
             }
 
-            // Check if all processes are done
-            if (jobQueue.isEmpty() && ReadyQueue.isEmpty()) {
-                break;
-            }
-
             try {
-                Thread.sleep(10); // the thread will wait 10 ms between checks
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 break;
             }

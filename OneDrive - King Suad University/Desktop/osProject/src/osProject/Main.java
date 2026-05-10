@@ -7,36 +7,48 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        Scanner read = new Scanner(System.in);
+    	Scanner read = new Scanner(System.in);
 
-        Queue<Process> jobQueue = JobReader.readJobs("job.txt");
+    	int choice;
 
-        System.out.println("\n---- CPU Scheduler Simulator ----");
-        System.out.println("1- Shortest Job First (SJF)");
-        System.out.println("2- Round Robin (RR)");
-        System.out.println("3- Priority Scheduling (Non-preemptive)");
-        System.out.print("Choose algorithm (1-3): ");
+    	do {
 
-        int choice = read.nextInt();
+    	    Queue<Process> jobQueue = JobReader.readJobs("job.txt");
 
-        switch (choice) {
-            case 1:
-                runSJF(jobQueue);
-                break;
+    	    System.out.println("\n---- CPU Scheduler Simulator ----");
+    	    System.out.println("1- Shortest Job First (SJF)");
+    	    System.out.println("2- Round Robin (RR)");
+    	    System.out.println("3- Priority Scheduling (Non-preemptive)");
+    	    System.out.println("4- Exit");
+    	    System.out.print("Choose algorithm (1-4): ");
 
-            case 2:
-                runRR(jobQueue);
-                break;
+    	    choice = read.nextInt();
 
-            case 3:
-                runPriority(jobQueue);
-                break;
+    	    switch (choice) {
 
-            default:
-                System.out.println("Invalid choice.");
-        }
+    	        case 1:
+    	            runSJF(jobQueue);
+    	            break;
 
-        read.close();
+    	        case 2:
+    	            runRR(jobQueue);
+    	            break;
+
+    	        case 3:
+    	            runPriority(jobQueue);
+    	            break;
+
+    	        case 4:
+    	            System.out.println("Program terminated.");
+    	            break;
+
+    	        default:
+    	            System.out.println("Invalid choice.");
+    	    }
+
+    	} while (choice != 4);
+
+    	read.close();
     }
 
     private static void runSJF(Queue<Process> jobQueue) {
